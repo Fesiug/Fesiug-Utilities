@@ -115,7 +115,7 @@ if SERVER then
 	}
 	
 	hook.Add( "PlayerCanPickupWeapon", "FES_ToggleWhen", function( ply, weapon )
-		if GetConVar("fes_lockweps"):GetBool() and fuckoff[weapon:GetClass()] then	return false end
+		if GetConVar("fes_ply_nohl2weps"):GetBool() and fuckoff[weapon:GetClass()] then return false end
 		--return !GetConVar("fes_lockweps"):GetBool()
 	end )
 end
