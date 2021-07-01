@@ -1,9 +1,6 @@
-local hide = {
-	["CHudDamageIndicator"] = true
-}
 
 hook.Add( "HUDShouldDraw", "HideHUD", function( name )
-	if ( hide[ name ] and !GetConVar("fes_plymod_dmgindicator"):GetBool() ) then
+	if name == "CHudDamageIndicator" and GetConVar("fes_plymod_dmgindicator"):GetBool() then
 		return false
 	end
 end )
@@ -14,6 +11,9 @@ hook.Add( "PopulateToolMenu", "FES_NPC_DMG", function()
 end )
 
 function FES_NPC_DMG( CPanel )
+	CPanel:AddControl("Header", {Description = "Remember to hit Apply when you're done!!" })
+	CPanel:AddControl("Button", {Label = "Apply", Command = "fes_ply_apply" })
+	
 	CPanel:AddControl("Header", {Description = "> - Damage Multipliers" })
 	CPanel:AddControl("Slider", {Label = "Player to NPC", Command = "fes_ply2npc_mult", min = 0, max = 3, Type = "float" })
 	CPanel:AddControl("Slider", {Label = "NPC to Player", Command = "fes_npc2ply_mult", min = 0, max = 3, Type = "float" })
@@ -38,9 +38,14 @@ function FES_NPC_DMG( CPanel )
 	CPanel:AddControl("Slider", {Label = "Ladder Speed", Command = "fes_plyspeed_ladder",	min = 100,	max = 500,	Type = "float"  })	
 	CPanel:AddControl("Slider", {Label = "Jump Power", Command = "fes_plyspeed_jumppower",	min = 1,	max = 500,	Type = "float" })
 	
-	CPanel:AddControl("Checkbox", {Label = "Collide with Team", Command = "fes_plymod_collideteam" })
+	CPanel:AddControl("Checkbox", {Label = "No-Collide with Team", Command = "fes_plymod_collideteam" })
+	CPanel:AddControl("label",    {text =  "Only works with team IDs 1 through 4" })
 	CPanel:AddControl("Checkbox", {Label = "Avoid Players", Command = "fes_plymod_avoidplayers" })
-	CPanel:AddControl("Checkbox", {Label = "Damage Indicator", Command = "fes_plymod_dmgindicator" })
+	CPanel:AddControl("label",    {text =  "Pushes players away from each other when too close." })
+	CPanel:AddControl("Checkbox", {Label = "Disable Giant Fuckall Red Damage Flash", Command = "fes_plymod_dmgindicator" })
+	CPanel:AddControl("label",    {text =  "yeah" })
+	CPanel:AddControl("Checkbox", {Label = "Only Sprint Moving Forward", Command = "fes_plymod_onlysprintforward" })
+	CPanel:AddControl("label",    {text =  "Only allow players to sprint when moving forward, JUST LIKE MODERN WARFARE!!!" })
 	
 	CPanel:AddControl("Button", {Label = "Apply", Command = "fes_ply_apply" })
 end
