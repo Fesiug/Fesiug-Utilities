@@ -111,6 +111,8 @@ if SERVER then
 		["weapon_crossbow"] = true,
 		["weapon_slam"] = true,
 		["weapon_annabelle"] = true,
+		["weapon_bugbait"] = true,
+		["weapon_physcannon"] = true,
 		["weapon_alyxgun"] = true,
 		["weapon_stunstick"] = true,
 		["weapon_crowbar"] = true,
