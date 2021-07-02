@@ -110,6 +110,8 @@ if SERVER then
 		["weapon_frag"] = true,
 		["weapon_crossbow"] = true,
 		["weapon_slam"] = true,
+		["weapon_annabelle"] = true,
+		["weapon_alyxgun"] = true,
 		["weapon_stunstick"] = true,
 		["weapon_crowbar"] = true,
 	}
