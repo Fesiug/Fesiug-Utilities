@@ -3,6 +3,9 @@ hook.Add( "HUDShouldDraw", "HideHUD", function( name )
 	if name == "CHudDamageIndicator" and GetConVar("fes_plymod_dmgindicator"):GetBool() then
 		return false
 	end
+	if name == "CHudZoom" and GetConVar("fes_plymod_zoom"):GetBool() then
+		return false
+	end
 end )
 
 
@@ -46,6 +49,10 @@ function FES_NPC_DMG( CPanel )
 	CPanel:AddControl("label",    {text =  "yeah" })
 	CPanel:AddControl("Checkbox", {Label = "Only Sprint Moving Forward", Command = "fes_plymod_onlysprintforward" })
 	CPanel:AddControl("label",    {text =  "Only allow players to sprint when moving forward, JUST LIKE MODERN WARFARE!!!" })
+	CPanel:AddControl("Checkbox", {Label = "Ablative Armor", Command = "fes_plymod_abarmor" })
+	CPanel:AddControl("label",    {text =  "Clone of Arctic's Ablative Armor :trollface:" })
+	CPanel:AddControl("Checkbox", {Label = "No HL2 Weapons", Command = "fes_plymod_nohl2weps" })
+	CPanel:AddControl("label",    {text =  "Disallow picking up HL2 weapons." })
 	
 	CPanel:AddControl("Button", {Label = "Apply", Command = "fes_ply_apply" })
 end

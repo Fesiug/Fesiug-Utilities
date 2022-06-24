@@ -1,5 +1,6 @@
 -- Written by Fesiug
 -- But I stole the ConVars part from ArcCW :ujel:
+-- And Ablative Armor (https://steamcommunity.com/sharedfiles/filedetails/?id=2379630104) from Arctic
 
 local convars = {
 	-- Damage
@@ -27,9 +28,11 @@ local convars = {
 	["fes_plymod_collideteam"]		= { def	= 1,	desc = "Player to collide with teammates?" },
 	["fes_plymod_avoidplayers"]		= { def	= 1,	desc = "Player squirms away from other players when haves no personal space?" },
 	["fes_plymod_dmgindicator"]		= { def	= 0,	desc = "Disable the damage indicator?" },
+	["fes_plymod_abarmor"]			= { def	= 0,	desc = "Enable Arctic's Ablative Armor?" },
+	["fes_plymod_zoom"]			= { def	= 0,	desc = "Disable the zoom HUD?" },
 	["fes_plymod_onlysprintforward"]	= { def	= 0,	desc = "Only allow players to sprint when moving forward, JUST LIKE MODERN WARFARE!!!" },
 	
-	["fes_ply_nohl2weps"]		= { def	= 0,	desc = "" },
+	["fes_plymod_nohl2weps"]		= { def	= 0,	desc = "" },
 }
 
 for name, data in pairs(convars) do
@@ -69,6 +72,23 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 	end
 	
 	dmginfo:SetDamage( dmg * mult )
+
+
+	if FES_GC("fes_plymod_abarmor", "b") and dmginfo:GetDamage() != DMG_DIRECT and target:IsPlayer() then
+		local d = dmginfo:GetDamage()
+		if target:Armor() >= d then
+			target:SetArmor(target:Armor() - d)
+			return true
+		else
+			if target:Armor() > 0 then
+				dmginfo:SetDamage(d - target:Armor())
+				target:SetArmor(0)
+				target:TakeDamageInfo(dmginfo)
+				return true
+			end
+		end
+	end
+
 end )
 
 if SERVER then
@@ -119,7 +139,7 @@ if SERVER then
 	}
 	
 	hook.Add( "PlayerCanPickupWeapon", "FES_ToggleWhen", function( ply, weapon )
-		if GetConVar("fes_ply_nohl2weps"):GetBool() and fuckoff[weapon:GetClass()] then return false end
+		if GetConVar("fes_plymod_nohl2weps"):GetBool() and fuckoff[weapon:GetClass()] then return false end
 		--return !GetConVar("fes_lockweps"):GetBool()
 	end )
 end
