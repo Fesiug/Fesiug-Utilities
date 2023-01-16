@@ -120,6 +120,13 @@ if SERVER then
         end
     end )
 	
+	concommand.Add("fes_ply_defaults", function()
+		for i, v in pairs( convars ) do
+			GetConVar(i):Revert()
+		end
+		RunConsoleCommand("fes_ply_apply")
+	end)
+	
 	local fuckoff = {
 		["weapon_357"] = true,
 		["weapon_pistol"] = true,
