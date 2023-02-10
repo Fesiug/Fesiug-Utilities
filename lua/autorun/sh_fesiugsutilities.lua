@@ -75,15 +75,17 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 
 
 	if FES_GC("fes_plymod_abarmor", "b") and dmginfo:GetDamage() != DMG_DIRECT and target:IsPlayer() then
-		local d = dmginfo:GetDamage()
-		if target:Armor() >= d then
-			target:SetArmor(target:Armor() - d)
-			return true
-		else
-			if target:Armor() > 0 then
-				dmginfo:SetDamage(d - target:Armor())
-				target:SetArmor(0)
-				target:TakeDamageInfo(dmginfo)
+		local d = dmg:GetDamage()
+		if dmg:IsDamageType(DMG_FALL + DMG_DIRECT + DMG_CRUSH) then return end
+
+		if ent:IsPlayer() then
+			if ent:Armor() >= d then
+				ent:SetArmor(ent:Armor() - d)
+				return true
+			elseif ent:Armor() > 0 then
+				dmg:SetDamage(d - ent:Armor())
+				ent:SetArmor(0)
+				ent:TakeDamageInfo(dmg)
 				return true
 			end
 		end
@@ -152,7 +154,7 @@ if SERVER then
 end
 
 hook.Add("StartCommand", "FES_SprintOnlyForward", function(ply, cmd)
-	if FES_GC("fes_plymod_onlysprintforward", "b") and cmd:KeyDown( IN_SPEED ) and cmd:GetForwardMove() <= 0 then
+	if FES_GC("fes_plymod_onlysprintforward", "b") and cmd:KeyDown( IN_SPEED ) and cmd:GetForwardMove() < math.abs(cmd:GetSideMove()) then
 		cmd:RemoveKey( IN_SPEED )
 	end
 end)
