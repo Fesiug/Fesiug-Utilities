@@ -74,20 +74,16 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 	dmginfo:SetDamage( dmg * mult )
 
 
-	if FES_GC("fes_plymod_abarmor", "b") and dmginfo:GetDamage() != DMG_DIRECT and target:IsPlayer() then
-		local d = dmg:GetDamage()
-		if dmg:IsDamageType(DMG_FALL + DMG_DIRECT + DMG_CRUSH) then return end
-
-		if ent:IsPlayer() then
-			if ent:Armor() >= d then
-				ent:SetArmor(ent:Armor() - d)
-				return true
-			elseif ent:Armor() > 0 then
-				dmg:SetDamage(d - ent:Armor())
-				ent:SetArmor(0)
-				ent:TakeDamageInfo(dmg)
-				return true
-			end
+	if FES_GC("fes_plymod_abarmor", "b") and !dmginfo:IsDamageType(DMG_FALL + DMG_DIRECT) and target:IsPlayer() then
+		local d = dmginfo:GetDamage()
+		if target:Armor() >= d then
+			target:SetArmor(target:Armor() - d)
+			return true
+		elseif target:Armor() > 0 then
+			dmginfo:SetDamage(d - target:Armor())
+			target:SetArmor(0)
+			target:TakeDamageInfo(dmginfo)
+			return true
 		end
 	end
 
