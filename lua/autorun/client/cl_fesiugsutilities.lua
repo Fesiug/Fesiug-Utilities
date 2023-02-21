@@ -16,7 +16,20 @@ end )
 function FES_NPC_DMG( CPanel )
 	CPanel:AddControl("Header", {Description = "Remember to hit Apply when you're done!!" })
 	CPanel:AddControl("Button", {Label = "Apply", Command = "fes_ply_apply" })
-	CPanel:AddControl("Button", {Label = "Return to Defaults", Command = "fes_ply_defaults" })
+	CPanel:AddControl("Button", {Label = "Return to GMod Defaults", Command = "fes_ply_defaults" })
+
+	local combobox = vgui.Create( "DComboBox", CPanel )
+	combobox.OnSelect = function( self, index, value )
+		RunConsoleCommand( "fes_plymod_preset", self:GetOptionData( index ) )
+	end
+	combobox:Dock( TOP )
+	combobox:DockMargin( 10, 10, 10, 10 )
+	combobox:SetValue( "Select a preset" )
+	combobox:AddChoice( "Half-Life 2", "hl2" )
+	combobox:AddChoice( "Half-Life 1", "hl1" )
+	combobox:AddChoice( "Counter-Strike: Source", "css" )
+	combobox:AddChoice( "Left 4 Dead 2", "l4d2" )
+	combobox:AddChoice( "Day of Defeat: Source", "dods" )
 	
 	CPanel:AddControl("Header", {Description = "> - Damage Multipliers" })
 	CPanel:AddControl("Slider", {Label = "Player to NPC", Command = "fes_ply2npc_mult", min = 0, max = 3, Type = "float" })
@@ -58,7 +71,7 @@ function FES_NPC_DMG( CPanel )
 	CPanel:AddControl("label",    {text =  "Hide HL2 Zoom HUD." })
 	
 	CPanel:AddControl("Button", {Label = "Apply", Command = "fes_ply_apply" })
-	CPanel:AddControl("Button", {Label = "Return to Defaults", Command = "fes_ply_defaults" })
+	CPanel:AddControl("Button", {Label = "Return to GMod Defaults", Command = "fes_ply_defaults" })
 end
 
 list.Set( "DesktopWindows", "SquadOrder", {

@@ -35,6 +35,49 @@ local convars = {
 	["fes_plymod_nohl2weps"]		= { def	= 0,	desc = "" },
 }
 
+local god = {
+	["hl2"] = {
+		["fes_plyspeed_walkslow"]		= 150,
+		["fes_plyspeed_walk"]			= 190,
+		["fes_plyspeed_run"]			= 320,
+		["fes_plyspeed_crouchedmult"]	= 0.33,
+		["fes_plyspeed_jumppower"]		= 160,
+		["sv_gravity"]					= 600,
+	},
+	["hl1"] = {
+		["fes_plyspeed_walkslow"]		= 120,
+		["fes_plyspeed_walk"]			= 320,
+		["fes_plyspeed_run"]			= 400,
+		["fes_plyspeed_crouchedmult"]	= 0.33,
+		["fes_plyspeed_jumppower"]		= 269,
+		["sv_gravity"]					= 800,
+	},
+	["css"] = {
+		["fes_plyspeed_walkslow"]		= 130,
+		["fes_plyspeed_walk"]			= 250,
+		["fes_plyspeed_run"]			= 320,
+		["fes_plyspeed_crouchedmult"]	= 0.34,
+		["fes_plyspeed_jumppower"]		= 302,
+		["sv_gravity"]					= 800,
+	},
+	["l4d2"] = {
+		["fes_plyspeed_walkslow"]		= 85,
+		["fes_plyspeed_walk"]			= 220,
+		["fes_plyspeed_run"]			= 320,
+		["fes_plyspeed_crouchedmult"]	= 0.33,
+		["fes_plyspeed_jumppower"]		= 250,
+		["sv_gravity"]					= 800,
+	},
+	["dods"] = {
+		["fes_plyspeed_walkslow"]		= 150,
+		["fes_plyspeed_walk"]			= 220,
+		["fes_plyspeed_run"]			= 315,
+		["fes_plyspeed_crouchedmult"]	= 0.33,
+		["fes_plyspeed_jumppower"]		= 269,
+		["sv_gravity"]					= 800,
+	},
+}
+
 for name, data in pairs(convars) do
 	CreateConVar(name, data.def, FCVAR_ARCHIVE + FCVAR_REPLICATED, data.desc, data.min, data.max)
 end
@@ -123,6 +166,21 @@ if SERVER then
 	concommand.Add("fes_ply_defaults", function()
 		for i, v in pairs( convars ) do
 			GetConVar(i):Revert()
+			RunConsoleCommand( "sv_gravity", 600 )
+		end
+		RunConsoleCommand("fes_ply_apply")
+	end)
+	
+	concommand.Add("fes_plymod_preset", function( ply, cmd, args )
+		local mama = god[args[1]]
+		for i, v in pairs( mama ) do
+			if i == "sv_gravity" then
+				RunConsoleCommand( "sv_gravity", v )
+			elseif isnumber(v) then
+				GetConVar(i):SetFloat( v )
+			elseif isstring(v) then
+				GetConVar(i):SetString( v )
+			end
 		end
 		RunConsoleCommand("fes_ply_apply")
 	end)
