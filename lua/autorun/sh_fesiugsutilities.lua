@@ -29,6 +29,7 @@ local convars = {
 	["fes_plymod_avoidplayers"]		= { def	= 1,	desc = "Player squirms away from other players when haves no personal space?" },
 	["fes_plymod_dmgindicator"]		= { def	= 0,	desc = "Disable the damage indicator?" },
 	["fes_plymod_abarmor"]			= { def	= 0,	desc = "Enable Arctic's Ablative Armor?" },
+	["fes_plymod_abarmor_fall"]			= { def	= 0,	desc = "Enable armor fall damage absorbtion?" },
 	["fes_plymod_zoom"]			= { def	= 0,	desc = "Disable the zoom HUD?" },
 	["fes_plymod_onlysprintforward"]	= { def	= 0,	desc = "Only allow players to sprint when moving forward, JUST LIKE MODERN WARFARE!!!" },
 	
@@ -117,7 +118,7 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 	dmginfo:SetDamage( dmg * mult )
 
 
-	if FES_GC("fes_plymod_abarmor", "b") and !dmginfo:IsDamageType(DMG_FALL + DMG_DIRECT) and target:IsPlayer() then
+	if FES_GC("fes_plymod_abarmor", "b") and (!dmginfo:IsDamageType(DMG_DIRECT) and FES_GC("fes_plymod_abarmor_fall", "b") or !dmginfo:IsDamageType(DMG_DIRECT + DMG_FALL)) and target:IsPlayer() then
 		local d = dmginfo:GetDamage()
 		if target:Armor() >= d then
 			target:SetArmor(target:Armor() - d)
