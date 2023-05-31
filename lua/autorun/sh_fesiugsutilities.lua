@@ -117,18 +117,31 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 	
 	dmginfo:SetDamage( dmg * mult )
 
-
-	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() then
+	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 then
 		local d, acc = dmginfo:GetDamage(), target:GetInternalVariable("m_flDamageAccumulator")
-		if FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:IsDamageType(DMG_FALL) then
-			dmginfo:ScaleDamage(1 - (math.Clamp(target:Armor() / (d + acc), 0, 1)))
-			target:SetArmor(math.floor(target:Armor() - d + acc))
-		elseif (!dmginfo:IsDamageType(DMG_DIRECT+DMG_FALL)) and target:Armor() >= d * 0.8 then
-			target:SetHealth(math.floor(target:Health() + d * 0.2 + acc))
-			target:SetArmor(math.floor(target:Armor() - d * 0.2 + acc))
-			return
+		if (!dmginfo:IsDamageType(DMG_DIRECT+DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON)) then -- Don't protect against Fumes. Well made addons for this purpose will have cancelled the damage out already anyway
+			if FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:IsDamageType(DMG_FALL) then
+				dmginfo:ScaleDamage(1 - (math.Clamp(target:Armor() / d, 0, 1)))
+			else
+				d = d * 0.2
+				target:SetHealth(target:Health() + d + acc)
+			end
+			target:SetArmor(math.max(target:Armor() - d, 0))
 		end
 	end
+
+	-- if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() then
+	-- 	local d, acc = dmginfo:GetDamage(), target:GetInternalVariable("m_flDamageAccumulator")
+	-- 		if IsValid(dmginfo:GetAttacker()) then dmginfo:GetAttacker():PrintMessage(HUD_PRINTCENTER, d .. "  " .. 1 - (math.Clamp(target:Armor() / d, 0, 1))) end
+	-- 	-- if dmginfo:IsDamageType(DMG_BLAST) then d = d * 0.5 end -- We don't need this, yet.
+	-- 	if FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:IsDamageType(DMG_FALL) then
+	-- 		dmginfo:ScaleDamage(1 - (math.Clamp(target:Armor() / d, 0, 1)))
+	-- 		target:SetArmor(target:Armor() - math.max(d, 0))
+	-- 	elseif (!dmginfo:IsDamageType(DMG_DIRECT+DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON)) and target:Armor() >= d * 0.8 then -- Don't protect against Fumes. Well made addons for this purpose will have cancelled the damage out already anyway
+	-- 		target:SetHealth(target:Health() + d * 0.2 + acc)
+	-- 		target:SetArmor(math.max(target:Armor() - d, 0) * 0.2)
+	-- 	end
+	-- end
 
 end )
 
