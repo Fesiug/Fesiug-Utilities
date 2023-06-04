@@ -208,7 +208,7 @@ if SERVER then
 end
 
 hook.Add("StartCommand", "FES_SprintOnlyForward", function(ply, cmd)
-	if FES_GC("fes_plymod_onlysprintforward", "b") and cmd:KeyDown( IN_SPEED ) and cmd:GetForwardMove() < math.abs(cmd:GetSideMove()) then
+	if FES_GC("fes_plymod_onlysprintforward", "b") and cmd:KeyDown( IN_SPEED ) and ply:GetMoveType() != MOVETYPE_NOCLIP and cmd:GetForwardMove() < math.abs(cmd:GetSideMove()) then
 		cmd:RemoveKey( IN_SPEED )
 	end
 end)
