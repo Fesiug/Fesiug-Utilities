@@ -126,8 +126,8 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 			dmginfo:ScaleDamage(1-math.Clamp(target:Armor() / d, 0, 1))
 		elseif !dmginfo:IsDamageType(DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON) and target:Armor() > d * 0.8 then -- Don't protect against Fumes. Well made addons for this purpose will have cancelled the damage out already anyway
 			d = d * 0.2
-			target:SetArmor(math.Round(math.max(target:Armor() - d, 0)))
-			target:SetHealth(math.floor(math.max(target:Health() + d + acc, 0)))
+			target:SetArmor(math.max(target:Armor() - math.Round(d), 0))
+			target:SetHealth(math.max(target:Health() + math.floor(d + acc), 0))
 		end
 	end
 end )
