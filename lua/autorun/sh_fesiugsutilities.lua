@@ -121,12 +121,13 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 		local d, a, h, acc = dmginfo:GetDamage(), target:Armor(), target:Health(), target:GetInternalVariable("m_flDamageAccumulator")
 		if  (!dmginfo:IsDamageType(DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON) or (FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:IsFallDamage()) or dmginfo:GetDamageType() == DMG_DIRECT+DMG_BURN) then
 			dmginfo:SetDamageType(bit.bor(dmginfo:GetDamageType(), DMG_FALL))
-			target:SetHealth(math.max(h + d + math.min(a - d, 0) + acc, 0))
+			target:SetHealth(math.max(h + d + math.min(a - d, 0) + acc, 0)) -- so we don't actually die of fall damage, we can't call it post-taken
 		end
 	end
 end )
 hook.Add("PostEntityTakeDamage", "DamageTaken", function(target, dmginfo, took)
-	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 and (FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:GetDamageType() == DMG_FALL) then
+	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 then
+		if (!FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:GetDamageType() == 32) then return end
 		target:SetArmor(math.max(target:Armor() - dmginfo:GetDamage(), 0))
 	end
 end)
