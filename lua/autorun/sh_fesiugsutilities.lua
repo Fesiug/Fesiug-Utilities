@@ -116,7 +116,7 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 	end
 
 	dmginfo:SetDamage( dmg * mult )
-	print(dmginfo:GetInflictor())
+
 	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 then
 		local d, a, h, acc = dmginfo:GetDamage(), target:Armor(), target:Health(), target:GetInternalVariable("m_flDamageAccumulator")
 		-- Can't I just modify the fucking damage forces we take? This is all a bodge just to make that work
