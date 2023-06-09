@@ -116,21 +116,22 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 	end
 
 	dmginfo:SetDamage( dmg * mult )
-
+	
 	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 then
-		local d, acc = dmginfo:GetDamage(), target:GetInternalVariable("m_flDamageAccumulator")
-		if (FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:IsFallDamage()) then
-			dmginfo:ScaleDamage(1-math.Clamp(target:Armor() / d, 0, 1))
-			target:SetArmor(math.ceil(math.max(target:Armor() - d, 0)))
-		elseif dmginfo:GetDamageType() == DMG_DIRECT+DMG_BURN then
-			dmginfo:ScaleDamage(1-math.Clamp(target:Armor() / d, 0, 1))
-		elseif !dmginfo:IsDamageType(DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON) and target:Armor() > d * 0.8 then -- Don't protect against Fumes. Well made addons for this purpose will have cancelled the damage out already anyway
-			d = d * 0.2
-			target:SetArmor(math.max(target:Armor() - math.Round(d), 0))
-			target:SetHealth(math.max(target:Health() + math.floor(d + acc), 0))
+		local d, a, h, acc = dmginfo:GetDamage(), target:Armor(), target:Health(), target:GetInternalVariable("m_flDamageAccumulator")
+		print(d, a - d, h + d + acc)
+		if  (!dmginfo:IsDamageType(DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON) or (FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:IsFallDamage()) or dmginfo:GetDamageType() == DMG_DIRECT+DMG_BURN) then
+			-- print(dmginfo:GetDamage())
+			dmginfo:SetDamageType(bit.bor(dmginfo:GetDamageType(), DMG_FALL))
+			target:SetHealth(math.max(h + d + math.min(a - d, 0) + acc, 0))
 		end
 	end
 end )
+hook.Add("PostEntityTakeDamage", "DamageTaken", function(target, dmginfo, took)
+	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 then
+		target:SetArmor(math.max(target:Armor() - dmginfo:GetDamage(), 0))
+	end
+end)
 
 if SERVER then
 	local function FES_Apply( ply )
