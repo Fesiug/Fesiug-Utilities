@@ -119,16 +119,15 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 	
 	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 then
 		local d, a, h, acc = dmginfo:GetDamage(), target:Armor(), target:Health(), target:GetInternalVariable("m_flDamageAccumulator")
-		print(d, a - d, h + d + acc)
 		if  (!dmginfo:IsDamageType(DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON) or (FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:IsFallDamage()) or dmginfo:GetDamageType() == DMG_DIRECT+DMG_BURN) then
-			-- print(dmginfo:GetDamage())
 			dmginfo:SetDamageType(bit.bor(dmginfo:GetDamageType(), DMG_FALL))
 			target:SetHealth(math.max(h + d + math.min(a - d, 0) + acc, 0))
 		end
 	end
 end )
 hook.Add("PostEntityTakeDamage", "DamageTaken", function(target, dmginfo, took)
-	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 then
+	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 and (FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:GetDamageType() == DMG_FALL) then
+		print(dmginfo:GetDamageType())
 		target:SetArmor(math.max(target:Armor() - dmginfo:GetDamage(), 0))
 	end
 end)
