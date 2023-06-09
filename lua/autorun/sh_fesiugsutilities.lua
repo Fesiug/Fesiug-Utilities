@@ -119,9 +119,9 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 	
 	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 then
 		local d, a, h, acc = dmginfo:GetDamage(), target:Armor(), target:Health(), target:GetInternalVariable("m_flDamageAccumulator")
-		if  (!dmginfo:IsDamageType(DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON) or (FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:IsFallDamage()) or dmginfo:GetDamageType() == DMG_DIRECT+DMG_BURN) then
-			dmginfo:SetDamageType(bit.bor(dmginfo:GetDamageType(), DMG_FALL))
-			target:SetHealth(math.max(h + d + math.min(a - d, 0) + acc, 0)) -- so we don't actually die of fall damage, we can't call it post-taken
+		if  (!dmginfo:IsDamageType(DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON) or (FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:IsFallDamage())) then -- DMG_DIRECT bypasses any damage scaling (i.e. Alien Grunts' armor, Barney helmet), but is NOT directly applied to a player's health pool
+			dmginfo:SetDamageType(bit.bor(dmginfo:GetDamageType(), DMG_FALL)) -- can't we just apply damage directly in some more sensible way than this? DMG_DIRECT bypasses ScaleDamage, is not direct damage to player
+			target:SetHealth(math.max(h + d + math.min(a - d, 0) + acc, 0)) -- so we don't actually die of too much damage in the first place, we can't call it post-taken
 		end
 	end
 end )
