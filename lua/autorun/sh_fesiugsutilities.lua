@@ -128,7 +128,7 @@ end )
 hook.Add("PostEntityTakeDamage", "DamageTaken", function(target, dmginfo, took)
 	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 then
 		if (!FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:GetDamageType() == 32) then return end
-		target:SetArmor(math.max(target:Armor() - dmginfo:GetDamage(), 0))
+		target:SetArmor(math.max(target:Armor() - dmginfo:GetDamage(), 0)) -- calling here for responsiveness, hitmarkers 
 	end
 end)
 
