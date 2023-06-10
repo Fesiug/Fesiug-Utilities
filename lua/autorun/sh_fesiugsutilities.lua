@@ -124,26 +124,11 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 		-- Can't I just modify the fucking damage forces we take? This is all a bodge just to make that work
 		if  (!dmginfo:IsDamageType(DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON) or (FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:GetDamageType() == DMG_FALL and dmginfo:GetInflictor():IsWorld())) then -- DMG_DIRECT bypasses any damage scaling (i.e. Alien Grunts' armor, Barney helmet), but is NOT directly applied to a player's health pool
 			dmginfo:SetDamageBonus(d)
-			print(dmginfo:GetDamage())
 			if m == 1 then
 				dmginfo:SetDamageType(bit.bor(dmginfo:GetDamageType(), DMG_FALL)) -- can't we just apply damage directly in some more sensible way than this? DMG_DIRECT bypasses ScaleDamage, is not direct damage to player
 				target:SetHealth(math.floor(math.max(h + d + math.min(a - d, 0) + acc, 0))) -- so we don't actually die of too much damage in the first place, we can't call it post-taken
-				print(dmginfo:GetDamage())
-			elseif m == 2 and target:Armor() >= d then -- simpler form of ablation, but no knockback
+			elseif target:Armor() >= d then -- simpler form of ablation, but no knockback, will take 1 more armor damage as this is stock gmod behavior and i dont feel like compensating. otherwise more compatible as it 100% works with insane stats like above does
 				dmginfo:ScaleDamage(1-math.Clamp(d != 0 and target:Armor() / d or 0, 0, 1))
-				print(dmginfo:GetDamage())
-			elseif m >= 3 then -- AAAGGHHH arctic mode, won't call PostEntityTakeDamage & sucks
-				if target:Armor() >= d then
-					target:SetArmor(target:Armor() - d)
-					return true
-				else
-					if target:Armor() > 0 then
-						dmginfo:SetDamage(d - target:Armor())
-						target:SetArmor(0)
-						target:TakeDamageInfo(dmginfo)
-						return true
-					end
-				end
 			end
 		end
 	end
@@ -153,7 +138,7 @@ hook.Add("PostEntityTakeDamage", "DamageTaken", function(target, dmginfo, took)
 	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 then
 		local b = dmginfo:GetDamageBonus()
 		if (!FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:GetDamageType() == DMG_FALL and dmginfo:GetInflictor():IsWorld()) then return end
-		target:SetArmor(math.max(target:Armor() - b + (dmginfo:IsFallDamage() and 0 or 1), 0)) -- calling here for responsiveness, hitmarkers 
+		target:SetArmor(math.max(target:Armor() - b, 0)) -- calling here for responsiveness, hitmarkers 
 	end
 end)
 
