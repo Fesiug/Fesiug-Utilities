@@ -29,10 +29,12 @@ local convars = {
 	["fes_plymod_avoidplayers"]		= { def	= 1,	desc = "Player squirms away from other players when haves no personal space?" },
 	["fes_plymod_dmgindicator"]		= { def	= 0,	desc = "Disable the damage indicator?" },
 	["fes_plymod_abarmor"]			= { def	= 0,	desc = "Enable Arctic's Ablative Armor?" },
-	["fes_plymod_zoom"]			= { def	= 0,	desc = "Disable the zoom HUD?" },
+	["fes_plymod_zoom"]				= { def	= 0,	desc = "Disable the zoom HUD?" },
 	["fes_plymod_onlysprintforward"]	= { def	= 0,	desc = "Only allow players to sprint when moving forward, JUST LIKE MODERN WARFARE!!!" },
-	
+
 	["fes_plymod_nohl2weps"]		= { def	= 0,	desc = "" },
+	["fes_plymod_deathnotice"]		= { def	= 0,	desc = "Hide player death notices." },
+
 }
 
 local god = {
