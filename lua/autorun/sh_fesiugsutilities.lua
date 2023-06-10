@@ -129,7 +129,7 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 				dmginfo:SetDamageType(bit.bor(dmginfo:GetDamageType(), DMG_FALL)) -- can't we just apply damage directly in some more sensible way than this? DMG_DIRECT bypasses ScaleDamage, is not direct damage to player
 				target:SetHealth(math.floor(math.max(h + d + math.min(a - d, 0) + acc, 0))) -- so we don't actually die of too much damage in the first place, we can't call it post-taken
 				print(dmginfo:GetDamage())
-			elseif m == 2 and target:Armor() > d then -- simpler form of ablation, but no knockback
+			elseif m == 2 and target:Armor() >= d then -- simpler form of ablation, but no knockback
 				dmginfo:ScaleDamage(1-math.Clamp(d != 0 and target:Armor() / d or 0, 0, 1))
 				print(dmginfo:GetDamage())
 			elseif m >= 3 then -- AAAGGHHH arctic mode, won't call PostEntityTakeDamage & sucks
