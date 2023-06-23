@@ -122,7 +122,6 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 then
 		local d, a, h, acc = dmginfo:GetDamage(), target:Armor(), target:Health(), target:GetInternalVariable("m_flDamageAccumulator")
 		local isfall = (FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:IsDamageType(DMG_FALL) and dmginfo:GetInflictor():IsWorld())
-		-- print(isfall, !dmginfo:IsDamageType(DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON), target:Armor(), d * 0.8, target:Armor() > d * 0.8)
 		-- Can't I just modify the fucking damage forces we take? This is all a bodge just to make that work
 		if isfall or !dmginfo:IsDamageType(DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON) and target:Armor() > d then -- DMG_DIRECT bypasses any damage scaling (i.e. Alien Grunts' armor, Barney helmet), but is NOT directly applied to a player's health pool
 			dmginfo:SetDamageBonus(d)
