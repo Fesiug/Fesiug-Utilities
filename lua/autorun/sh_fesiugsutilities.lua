@@ -124,8 +124,22 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 		local isfall = (FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:IsDamageType(DMG_FALL) and dmginfo:GetInflictor():IsWorld())
 		-- LESS LINES BETTER CODE -- I do not care for some magic Compatibility with every mod on earth!!
 		if isfall or !dmginfo:IsDamageType(393216) then -- We don't care about DMG_DIRECT, it only bypasses NPC armor and usually indicates being on fire
-			dmginfo:SetDamageType(bit.bor(dmginfo:GetDamageType(), DMG_FALL)) -- the only side effect is a meaty crunch from an armored kill barring other mods
-			target:SetHealth(math.floor(math.max(h + d - math.max(d - a, 0) + acc, 0))) -- compensate damage first then reduce appropriate amount, don't touch damage itself at all
+			if FES_GC("fes_plymod_abarmor", "i") > 1 then
+				if target:Armor() >= d then
+					target:SetArmor(target:Armor() - d)
+					return true
+				else
+					if target:Armor() > 0 then
+						dmginfo:SetDamage(d - target:Armor())
+						target:SetArmor(0)
+						target:TakeDamageInfo(dmginfo)
+						return true
+					end
+				end 
+			else
+				dmginfo:SetDamageType(bit.bor(dmginfo:GetDamageType(), DMG_FALL)) -- the only side effect is a meaty crunch from an armored kill barring other mods
+				target:SetHealth(math.floor(math.max(h + d - math.max(d - a, 0) + acc, 0))) -- compensate damage first then reduce appropriate amount, don't touch damage itself at all
+			end
 		end
 	end
 end )
