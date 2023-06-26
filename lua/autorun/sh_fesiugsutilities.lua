@@ -123,9 +123,9 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 		local d, a, h, acc = dmginfo:GetDamage(), target:Armor(), target:Health(), target:GetInternalVariable("m_flDamageAccumulator")
 		local isfall = (FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:IsDamageType(DMG_FALL) and dmginfo:GetInflictor():IsWorld())
 		-- LESS LINES BETTER CODE -- I do not care for some magic Compatibility with every mod on earth!!
-		if isfall or !dmginfo:IsDamageType(DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON) then -- DMG_DIRECT bypasses any damage scaling (i.e. Alien Grunts' armor, Barney helmet), but is NOT directly applied to a player's health pool
-			target:SetHealth(math.floor(math.max(h + d - math.max(d - a, 0) + acc, 0))) -- so we don't actually die of too much damage in the first place, we can't call it post-taken
-			dmginfo:SetDamageType(bit.bor(dmginfo:GetDamageType(), DMG_FALL)) -- can't we just apply damage directly in some more sensible way than this?
+		if isfall or !dmginfo:IsDamageType(393216) then -- We don't care about DMG_DIRECT, it only bypasses NPC armor and usually indicates being on fire
+			dmginfo:SetDamageType(bit.bor(dmginfo:GetDamageType(), DMG_FALL)) -- the only side effect is a meaty crunch from an armored kill barring other mods
+			target:SetHealth(math.floor(math.max(h + d - math.max(d - a, 0) + acc, 0))) -- compensate damage first then reduce appropriate amount, don't touch damage itself at all
 		end
 	end
 end )
