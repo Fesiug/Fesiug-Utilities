@@ -122,22 +122,18 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 then
 		local d, a, h, acc = dmginfo:GetDamage(), target:Armor(), target:Health(), target:GetInternalVariable("m_flDamageAccumulator")
 		local isfall = (FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:IsDamageType(DMG_FALL) and dmginfo:GetInflictor():IsWorld())
-		-- Can't I just modify the fucking damage forces we take? This is all a bodge just to make that work
-		if isfall or !dmginfo:IsDamageType(DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON) and target:Armor() > d then -- DMG_DIRECT bypasses any damage scaling (i.e. Alien Grunts' armor, Barney helmet), but is NOT directly applied to a player's health pool
-			dmginfo:SetDamageBonus(d)
-			if FES_GC("fes_plymod_abarmor", "i") == 1 then
-				dmginfo:SetDamageType(bit.bor(dmginfo:GetDamageType(), DMG_FALL)) -- can't we just apply damage directly in some more sensible way than this? DMG_DIRECT bypasses ScaleDamage, is not direct damage to player
-				target:SetHealth(math.floor(math.max(h + d + math.min(a - d, 0) + acc, 0))) -- so we don't actually die of too much damage in the first place, we can't call it post-taken
-			else -- simpler form of ablation, but no knockback, and will take 1 more armor damage as this is stock gmod behavior and i dont feel like compensating. otherwise more compatible as it 100% works with insane stats like above does
-				dmginfo:ScaleDamage(1-math.Clamp(d > 0 and target:Armor() / d or 0, 0, 1))
-			end
+		-- LESS LINES BETTER CODE -- I do not care for some magic Compatibility with every mod on earth!!
+		if isfall or !dmginfo:IsDamageType(DMG_FALL+DMG_DROWN+DMG_RADIATION+DMG_POISON) then -- DMG_DIRECT bypasses any damage scaling (i.e. Alien Grunts' armor, Barney helmet), but is NOT directly applied to a player's health pool
+			target:SetHealth(math.floor(math.max(h + d - math.max(d - a, 0) + acc, 0))) -- so we don't actually die of too much damage in the first place, we can't call it post-taken
+			dmginfo:SetDamageType(bit.bor(dmginfo:GetDamageType(), DMG_FALL)) -- can't we just apply damage directly in some more sensible way than this?
 		end
 	end
 end )
+
 hook.Add("PostEntityTakeDamage", "DamageTaken", function(target, dmginfo, took)
 	if FES_GC("fes_plymod_abarmor", "b") and target:IsPlayer() and target:Armor() > 0 then
-		local b = dmginfo:GetDamageBonus()
-		if b <= 1 or (!FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:GetDamageType() == DMG_FALL and dmginfo:GetInflictor():IsWorld()) then return end
+		if (!FES_GC("fes_plymod_abarmor_fall", "b") and dmginfo:GetDamageType() == DMG_FALL and dmginfo:GetInflictor():IsWorld()) then return end
+		local b = dmginfo:GetDamage()
 		target:SetArmor(math.max(target:Armor() - b, 0)) -- calling here for responsiveness, hitmarkers 
 	end
 end)
