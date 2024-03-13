@@ -211,7 +211,7 @@ if SERVER then
 		--return !GetConVar("fes_lockweps"):GetBool()
 	end )
 
-	hook.add( "PlayerDeath", "HNA_PlayerDeath", function(victim, inflictor, attacker)
+	hook.Add( "PlayerDeath", "HNA_PlayerDeath", function(victim, inflictor, attacker)
 		if GetConVar("fes_plymod_hna"):GetBool() then
 			if attacker:IsValid() and !attacker:IsNextBot() and !attacker:IsNPC() and attacker:IsPlayer() then
 				if attacker ~= victim then
@@ -222,7 +222,7 @@ if SERVER then
 		end
 	end )
 
-	hook.add( "OnNPCKilled", "HNA_OnNPCKilled", function(npc, attacker, inflictor)
+	hook.Add( "OnNPCKilled", "HNA_OnNPCKilled", function(npc, attacker, inflictor)
 		if GetConVar("fes_plymod_hna"):GetBool() then
 			if attacker:IsValid() and !attacker:IsNextBot() and !attacker:IsNPC() and attacker:IsPlayer() then
 				attacker:SetHealth( FES_GC("fes_ply_health_start", "i") )
