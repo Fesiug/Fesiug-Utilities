@@ -34,6 +34,7 @@ local convars = {
 
 	["fes_plymod_nohl2weps"]		= { def	= 0,	desc = "" },
 	["fes_plymod_deathnotice"]		= { def	= 0,	desc = "Hide player death notices." },
+	["fes_plymod_hna"]			= { def	= 0,	desc = "Restore player health and armor on kill." },
 
 }
 
@@ -208,6 +209,26 @@ if SERVER then
 	hook.Add( "PlayerCanPickupWeapon", "FES_ToggleWhen", function( ply, weapon )
 		if GetConVar("fes_plymod_nohl2weps"):GetBool() and fuckoff[weapon:GetClass()] then return false end
 		--return !GetConVar("fes_lockweps"):GetBool()
+	end )
+
+	hook.Add( "PlayerDeath", "HNA_PlayerDeath", function(victim, inflictor, attacker)
+		if GetConVar("fes_plymod_hna"):GetBool() then
+			if attacker:IsValid() and !attacker:IsNextBot() and !attacker:IsNPC() and attacker:IsPlayer() then
+				if attacker ~= victim then
+					attacker:SetHealth( FES_GC("fes_ply_health_start", "i") )
+					attacker:SetArmor( FES_GC("fes_ply_armor_start", "i") )
+				end
+			end
+		end
+	end )
+
+	hook.Add( "OnNPCKilled", "HNA_OnNPCKilled", function(npc, attacker, inflictor)
+		if GetConVar("fes_plymod_hna"):GetBool() then
+			if attacker:IsValid() and !attacker:IsNextBot() and !attacker:IsNPC() and attacker:IsPlayer() then
+				attacker:SetHealth( FES_GC("fes_ply_health_start", "i") )
+				attacker:SetArmor( FES_GC("fes_ply_armor_start", "i") )
+			end
+		end
 	end )
 end
 

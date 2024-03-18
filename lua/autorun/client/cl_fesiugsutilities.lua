@@ -75,6 +75,8 @@ function FES_NPC_DMG( CPanel )
 	CPanel:AddControl("label",    {text =  "Hide HL2 Zoom HUD." })
 	CPanel:AddControl("Checkbox", {Label = "Hide Death Notice", Command = "fes_plymod_deathnotice" })
 	CPanel:AddControl("label",    {text =  "Hide top-right popups on NPC/player death." })
+	CPanel:AddControl("Checkbox", {Label = "Health n Armor", Command = "fes_plymod_hna" })
+	CPanel:AddControl("label",    {text =  "Restore player health and armor on kill." })
 
 	CPanel:AddControl("Button", {Label = "Apply", Command = "fes_ply_apply" })
 	CPanel:AddControl("Button", {Label = "Return to GMod Defaults", Command = "fes_ply_defaults" })
