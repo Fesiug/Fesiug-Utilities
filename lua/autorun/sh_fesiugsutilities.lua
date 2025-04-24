@@ -137,10 +137,12 @@ hook.Add( "EntityTakeDamage", "YouWillFuckNPCs", function( target, dmginfo )
 end )
 
 if SERVER then
-	local function FES_Apply( ply )
+	local function FES_Apply( ply, transition )
 		timer.Simple( 0, function()
-			ply:SetHealth		( FES_GC("fes_ply_health_start",	"i") )
-			ply:SetArmor		( FES_GC("fes_ply_armor_start",		"i") )
+            if not transition then
+                ply:SetHealth		( FES_GC("fes_ply_health_start",	"i") )
+                ply:SetArmor		( FES_GC("fes_ply_armor_start",		"i") )
+            end
             ply:SetMaxHealth	( FES_GC("fes_ply_health_max",		"i") )
             ply:SetMaxArmor		( FES_GC("fes_ply_armor_max",		"i") )
 			
